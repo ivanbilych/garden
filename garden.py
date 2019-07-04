@@ -2,6 +2,7 @@
 
 import argparse
 import socket
+import threading
 
 client_ip = None
 client_port = None
@@ -49,10 +50,23 @@ class Sender():
         self.sock.send(package.encode("utf8"))
         gprint("package sent: %s" % package)
 
+class SenderThread(threading.Thread):
+    def run(self):
+        sender = Sender(client_ip, client_port)
+
+        sender.init_connection()
+        sender.send_package("dummy package")
+        sender.stop_connection()
+
 def main():
     parse_command_line_arguments()
 
     gprint("Starting...\nServer port %d, client %s:%d" % (server_port, client_ip, client_port))
+
+    sender_thread = SenderThread()
+
+    sender_thread.start()
+    sender_thread.join()
 
 if __name__ == "__main__":
     main()
