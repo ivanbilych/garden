@@ -7,6 +7,10 @@ client_port = None
 server_port = None
 verbosity = False
 
+def gprint(message):
+    if verbosity:
+        print(message)
+
 def parse_command_line_arguments():
     global client_ip, client_port, server_port, verbosity
 
@@ -26,6 +30,8 @@ def parse_command_line_arguments():
 
 def main():
     parse_command_line_arguments()
+
+    gprint("Starting...\nServer port %d, client %s:%d" % (server_port, client_ip, client_port))
 
 if __name__ == "__main__":
     main()
