@@ -8,6 +8,7 @@ import time
 import threading
 
 NUMBER_OF_PACKAGES = 3
+MAX_PACKAGE_BUFFER_SIZE = 256
 MAX_NEW_PACKAGE_WAIT_TIME_SEC = 10
 
 PACKAGE_TEMPLATE_JSON = """
@@ -59,6 +60,46 @@ def parse_command_line_arguments():
     client_port = args.client_port
     server_port = args.server_port
     verbosity = args.verbose
+
+class ReceiverThread(threading.Thread):
+    receiver = None
+
+    class Receiver():
+        server_port = None
+        sock = None
+
+        def __init__(self, port):
+            self.server_port = port
+
+        def stop_connection(self):
+            self.sock.close()
+
+        def init_connection(self):
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.sock.bind(("", int(self.server_port)))
+
+        def receive_packages(self):
+            times = NUMBER_OF_PACKAGES
+
+            self.sock.listen(1)
+
+            connection, client_address = self.sock.accept()
+
+            while times:
+                times -= 1
+
+                data = connection.recv(MAX_PACKAGE_BUFFER_SIZE)
+                gprint("package received: %s" % data.decode("utf8"))
+
+            connection.close()
+
+    def run(self):
+        self.receiver = self.Receiver(server_port)
+
+        self.receiver.init_connection()
+        self.receiver.receive_packages()
+        self.receiver.stop_connection()
 
 class SenderThread(threading.Thread):
     sender = None
@@ -119,9 +160,13 @@ def main():
     gprint("Starting...\nServer port %d, client %s:%d" % (server_port, client_ip, client_port))
 
     sender_thread = SenderThread()
+    receiver_thread = ReceiverThread()
 
     sender_thread.start()
+    receiver_thread.start()
+
     sender_thread.join()
+    receiver_thread.join()
 
 if __name__ == "__main__":
     main()
