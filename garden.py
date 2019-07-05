@@ -61,6 +61,8 @@ def parse_command_line_arguments():
     verbosity = args.verbose
 
 class SenderThread(threading.Thread):
+    sender = None
+
     class Sender():
         client_ip = None
         client_port = None
@@ -82,19 +84,19 @@ class SenderThread(threading.Thread):
             gprint("package sent: %s" % package)
 
     def run(self):
-        sender = self.Sender(client_ip, client_port)
+        self.sender = self.Sender(client_ip, client_port)
 
-        sender.init_connection()
-        self.generate_packages(sender)
-        sender.stop_connection()
+        self.sender.init_connection()
+        self.generate_packages()
+        self.sender.stop_connection()
 
-    def generate_packages(self, sender):
+    def generate_packages(self):
         times = NUMBER_OF_PACKAGES
 
         while times:
             times -= 1
 
-            sender.send_package(self.generate_package_json())
+            self.sender.send_package(self.generate_package_json())
 
             if times:
                 time.sleep(random.randint(1, MAX_NEW_PACKAGE_WAIT_TIME_SEC))
