@@ -1,8 +1,13 @@
 #!/usr/bin/python3
 
 import argparse
+import random
 import socket
+import time
 import threading
+
+NUMBER_OF_PACKAGES = 3
+MAX_NEW_PACKAGE_WAIT_TIME_SEC = 10
 
 client_ip = None
 client_port = None
@@ -55,8 +60,19 @@ class SenderThread(threading.Thread):
         sender = Sender(client_ip, client_port)
 
         sender.init_connection()
-        sender.send_package("dummy package")
+        self.generate_packages(sender)
         sender.stop_connection()
+
+    def generate_packages(self, sender):
+        times = NUMBER_OF_PACKAGES
+
+        while times:
+            times -= 1
+
+            sender.send_package("dummy package")
+
+            if times:
+                time.sleep(random.randint(1, MAX_NEW_PACKAGE_WAIT_TIME_SEC))
 
 def main():
     parse_command_line_arguments()
