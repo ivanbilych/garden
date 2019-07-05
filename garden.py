@@ -7,33 +7,7 @@ import socket
 import time
 import threading
 
-NUMBER_OF_PACKAGES = 3
-MAX_PACKAGE_BUFFER_SIZE = 256
-MAX_NEW_PACKAGE_WAIT_TIME_SEC = 10
-
-PACKAGE_TEMPLATE_JSON = """
-{
-    "name": "",
-    "amount": "",
-    "value": "",
-    "water": "",
-    "frequency": "",
-    "grow_time": ""
-}
-"""
-
-PACKAGE_NAME_VARIANTS = (
-    "Rose",
-    "Violet",
-    "Cactus",
-    "Cherry",
-    "Pineapple",
-    "Watermelon",
-    "Cucumber",
-    "Tomato",
-    "Orange",
-    "Banana"
-)
+import constants
 
 client_ip = None
 client_port = None
@@ -82,7 +56,7 @@ class ReceiverThread(threading.Thread):
             gprint("receiver connection created...")
 
         def receive_packages(self):
-            times = NUMBER_OF_PACKAGES
+            times = constants.NUMBER_OF_PACKAGES
 
             self.sock.listen(1)
 
@@ -92,7 +66,7 @@ class ReceiverThread(threading.Thread):
             while times:
                 times -= 1
 
-                data = connection.recv(MAX_PACKAGE_BUFFER_SIZE)
+                data = connection.recv(constants.MAX_PACKAGE_BUFFER_SIZE)
                 gprint("package received: %s" % data.decode("utf8"))
 
             connection.close()
@@ -142,7 +116,7 @@ class SenderThread(threading.Thread):
         self.sender.stop_connection()
 
     def generate_packages(self):
-        times = NUMBER_OF_PACKAGES
+        times = constants.NUMBER_OF_PACKAGES
 
         while times:
             times -= 1
@@ -150,12 +124,12 @@ class SenderThread(threading.Thread):
             self.sender.send_package(self.generate_package_json())
 
             if times:
-                time.sleep(random.randint(1, MAX_NEW_PACKAGE_WAIT_TIME_SEC))
+                time.sleep(random.randint(1, constants.MAX_NEW_PACKAGE_WAIT_TIME_SEC))
 
     def generate_package_json(self):
-        package = json.loads(PACKAGE_TEMPLATE_JSON)
+        package = json.loads(constants.PACKAGE_TEMPLATE_JSON)
 
-        package["name"] = random.choice(PACKAGE_NAME_VARIANTS)
+        package["name"] = random.choice(constants.PACKAGE_NAME_VARIANTS)
         package["amount"] = random.randint(1, 30)
         package["value"] = random.randint(1, 50)
         package["water"] = random.randint(1, 10)
