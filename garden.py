@@ -79,12 +79,15 @@ class ReceiverThread(threading.Thread):
             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.sock.bind(("", int(self.server_port)))
 
+            gprint("receiver connection created...")
+
         def receive_packages(self):
             times = NUMBER_OF_PACKAGES
 
             self.sock.listen(1)
 
             connection, client_address = self.sock.accept()
+            gprint("client connected: %s" % str(client_address[0]))
 
             while times:
                 times -= 1
@@ -93,8 +96,11 @@ class ReceiverThread(threading.Thread):
                 gprint("package received: %s" % data.decode("utf8"))
 
             connection.close()
+            gprint("client disconnected: %s" % str(client_address[0]))
 
     def run(self):
+        gprint("starting receiver...")
+
         self.receiver = self.Receiver(server_port)
 
         self.receiver.init_connection()
@@ -120,11 +126,15 @@ class SenderThread(threading.Thread):
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.client_ip, int(self.client_port)))
 
+            gprint("sender connection created...")
+
         def send_package(self, package):
             self.sock.send(package.encode("utf8"))
             gprint("package sent: %s" % package)
 
     def run(self):
+        gprint("starting sender...")
+
         self.sender = self.Sender(client_ip, client_port)
 
         self.sender.init_connection()
