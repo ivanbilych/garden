@@ -60,29 +60,29 @@ def parse_command_line_arguments():
     server_port = args.server_port
     verbosity = args.verbose
 
-class Sender():
-    client_ip = None
-    client_port = None
-    sock = None
-
-    def __init__(self, ip, port):
-        self.client_ip = ip
-        self.client_port = port
-
-    def stop_connection(self):
-        self.sock.close()
-
-    def init_connection(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.client_ip, int(self.client_port)))
-
-    def send_package(self, package):
-        self.sock.send(package.encode("utf8"))
-        gprint("package sent: %s" % package)
-
 class SenderThread(threading.Thread):
+    class Sender():
+        client_ip = None
+        client_port = None
+        sock = None
+
+        def __init__(self, ip, port):
+            self.client_ip = ip
+            self.client_port = port
+
+        def stop_connection(self):
+            self.sock.close()
+
+        def init_connection(self):
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((self.client_ip, int(self.client_port)))
+
+        def send_package(self, package):
+            self.sock.send(package.encode("utf8"))
+            gprint("package sent: %s" % package)
+
     def run(self):
-        sender = Sender(client_ip, client_port)
+        sender = self.Sender(client_ip, client_port)
 
         sender.init_connection()
         self.generate_packages(sender)
