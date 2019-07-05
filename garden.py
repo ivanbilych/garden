@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import json
 import random
 import socket
 import time
@@ -8,6 +9,30 @@ import threading
 
 NUMBER_OF_PACKAGES = 3
 MAX_NEW_PACKAGE_WAIT_TIME_SEC = 10
+
+PACKAGE_TEMPLATE_JSON = """
+{
+    "name": "",
+    "amount": "",
+    "value": "",
+    "water": "",
+    "frequency": "",
+    "grow_time": ""
+}
+"""
+
+PACKAGE_NAME_VARIANTS = (
+    "Rose",
+    "Violet",
+    "Cactus",
+    "Cherry",
+    "Pineapple",
+    "Watermelon",
+    "Cucumber",
+    "Tomato",
+    "Orange",
+    "Banana"
+)
 
 client_ip = None
 client_port = None
@@ -69,10 +94,22 @@ class SenderThread(threading.Thread):
         while times:
             times -= 1
 
-            sender.send_package("dummy package")
+            sender.send_package(self.generate_package_json())
 
             if times:
                 time.sleep(random.randint(1, MAX_NEW_PACKAGE_WAIT_TIME_SEC))
+
+    def generate_package_json(self):
+        package = json.loads(PACKAGE_TEMPLATE_JSON)
+
+        package["name"] = random.choice(PACKAGE_NAME_VARIANTS)
+        package["amount"] = random.randint(1, 30)
+        package["value"] = random.randint(1, 50)
+        package["water"] = random.randint(1, 10)
+        package["frequency"] = random.randint(1, 10)
+        package["grow_time"] = random.randint(10, 30)
+
+        return json.dumps(package)
 
 def main():
     parse_command_line_arguments()
