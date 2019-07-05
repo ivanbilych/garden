@@ -10,6 +10,7 @@ import threading
 import constants
 import mgprint
 from mgprint import gprint
+import receiver
 
 client_ip = None
 client_port = None
@@ -31,52 +32,6 @@ def parse_command_line_arguments():
     client_port = args.client_port
     server_port = args.server_port
     mgprint.set_verbosity(args.verbose)
-
-class ReceiverThread(threading.Thread):
-    receiver = None
-
-    class Receiver():
-        server_port = None
-        sock = None
-
-        def __init__(self, port):
-            self.server_port = port
-
-        def stop_connection(self):
-            self.sock.close()
-
-        def init_connection(self):
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sock.bind(("", int(self.server_port)))
-
-            gprint("receiver connection created...")
-
-        def receive_packages(self):
-            times = constants.NUMBER_OF_PACKAGES
-
-            self.sock.listen(1)
-
-            connection, client_address = self.sock.accept()
-            gprint("client connected: %s" % str(client_address[0]))
-
-            while times:
-                times -= 1
-
-                data = connection.recv(constants.MAX_PACKAGE_BUFFER_SIZE)
-                gprint("package received: %s" % data.decode("utf8"))
-
-            connection.close()
-            gprint("client disconnected: %s" % str(client_address[0]))
-
-    def run(self):
-        gprint("starting receiver...")
-
-        self.receiver = self.Receiver(server_port)
-
-        self.receiver.init_connection()
-        self.receiver.receive_packages()
-        self.receiver.stop_connection()
 
 class SenderThread(threading.Thread):
     sender = None
@@ -141,7 +96,7 @@ def main():
     gprint("Starting...\nServer port %d, client %s:%d" % (server_port, client_ip, client_port))
 
     sender_thread = SenderThread()
-    receiver_thread = ReceiverThread()
+    receiver_thread = receiver.ReceiverThread(server_port)
 
     sender_thread.start()
     receiver_thread.start()
