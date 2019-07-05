@@ -8,15 +8,12 @@ import time
 import threading
 
 import constants
+import mgprint
+from mgprint import gprint
 
 client_ip = None
 client_port = None
 server_port = None
-verbosity = False
-
-def gprint(message):
-    if verbosity:
-        print(message)
 
 def parse_command_line_arguments():
     global client_ip, client_port, server_port, verbosity
@@ -33,7 +30,7 @@ def parse_command_line_arguments():
     client_ip = args.client_ip
     client_port = args.client_port
     server_port = args.server_port
-    verbosity = args.verbose
+    mgprint.set_verbosity(args.verbose)
 
 class ReceiverThread(threading.Thread):
     receiver = None
