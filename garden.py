@@ -12,7 +12,7 @@ client_port = None
 server_port = None
 
 def parse_command_line_arguments():
-    global client_ip, client_port, server_port, verbosity
+    global client_ip, client_port, server_port
 
     parser = argparse.ArgumentParser()
 
