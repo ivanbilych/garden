@@ -8,10 +8,6 @@ import constants
 from mgprint import gprint
 
 class SenderThread(threading.Thread):
-    sender = None
-    client_ip = None
-    client_port = None
-
     def __init__(self, ip, port):
         threading.Thread.__init__(self)
 
@@ -19,10 +15,6 @@ class SenderThread(threading.Thread):
         self.client_port = port
 
     class Sender():
-        client_ip = None
-        client_port = None
-        sock = None
-
         def __init__(self, ip, port):
             self.client_ip = ip
             self.client_port = port

@@ -5,18 +5,12 @@ import constants
 from mgprint import gprint
 
 class ReceiverThread(threading.Thread):
-    receiver = None
-    server_port = None
-
     def __init__(self, port):
         threading.Thread.__init__(self)
 
         self.server_port = port
 
     class Receiver():
-        server_port = None
-        sock = None
-
         def __init__(self, port):
             self.server_port = port
 
