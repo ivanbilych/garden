@@ -2,6 +2,7 @@
 
 import argparse
 
+import garden
 import mgprint
 from mgprint import gprint
 import receiver
@@ -33,11 +34,14 @@ def main():
 
     gprint("Starting...\nServer port %d, client %s:%d" % (server_port, client_ip, client_port))
 
+    my_garden = garden.Garden()
     sender_thread = sender.SenderThread(client_ip, client_port)
-    receiver_thread = receiver.ReceiverThread(server_port)
+    receiver_thread = receiver.ReceiverThread(my_garden, server_port)
 
     sender_thread.start()
     receiver_thread.start()
+
+    my_garden.start()
 
     sender_thread.join()
     receiver_thread.join()

@@ -1,17 +1,23 @@
+import json
 import socket
 import threading
 
 import constants
+import garden
+import plant
+from plant import json_to_plant
 from mgprint import gprint
 
 class ReceiverThread(threading.Thread):
-    def __init__(self, port):
+    def __init__(self, garden, port):
         threading.Thread.__init__(self)
 
+        self.garden = garden
         self.server_port = port
 
     class Receiver():
-        def __init__(self, port):
+        def __init__(self, garden, port):
+            self.garden = garden
             self.server_port = port
 
         def stop_connection(self):
@@ -36,15 +42,18 @@ class ReceiverThread(threading.Thread):
                 times -= 1
 
                 data = connection.recv(constants.MAX_PACKAGE_BUFFER_SIZE)
-                gprint("package received: %s" % data.decode("utf8"))
+
+                self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
 
             connection.close()
             gprint("client disconnected: %s" % str(client_address[0]))
 
+            self.garden.stop()
+
     def run(self):
         gprint("starting receiver...")
 
-        self.receiver = self.Receiver(self.server_port)
+        self.receiver = self.Receiver(self.garden, self.server_port)
 
         self.receiver.init_connection()
         self.receiver.receive_packages()
