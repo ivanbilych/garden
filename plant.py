@@ -18,7 +18,7 @@ class Plant():
         self.plant_time = datetime.datetime.today()
 
     def drink_water(self, water):
-        gprint("plant %s drinks %d of water" % (self.NAME, water))
+        gprint("plant %s drinks %d of water (required %d)" % (self.NAME, water, self.REQUIRED_WATER))
         if water < self.REQUIRED_WATER:
             gprint("plant %s DIES" % self.NAME)
             self.is_alive = False
