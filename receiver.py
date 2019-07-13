@@ -21,14 +21,18 @@ class ReceiverThread(threading.Thread):
             self.server_port = port
 
         def stop_connection(self):
-            self.sock.close()
+            if self.sock:
+                self.sock.close()
+                self.sock = None
+
+                gprint(" receiver connection closed")
 
         def init_connection(self):
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.sock.bind(("", int(self.server_port)))
 
-            gprint("receiver connection created...")
+            gprint(" receiver connection created")
 
         def receive_packages(self):
             times = constants.NUMBER_OF_PACKAGES
@@ -36,30 +40,32 @@ class ReceiverThread(threading.Thread):
             self.sock.listen(1)
 
             connection, client_address = self.sock.accept()
-            gprint("client connected: %s" % str(client_address[0]))
+            gprint("  client: %s" % str(client_address[0]))
 
             while times:
                 data = connection.recv(constants.MAX_PACKAGE_BUFFER_SIZE)
 
                 if data:
-                    gprint("package received: %s" % data.decode("utf8"))
+                    gprint("  <<< %s" % data.decode("utf8"))
 
                     try:
                         self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
                         times -= 1
                     except:
-                        gprint("Wrong data received")
+                        gprint("  ERROR: Wrong data received")
 
             connection.close()
-            gprint("client disconnected: %s" % str(client_address[0]))
+            gprint("  disconnected: %s" % str(client_address[0]))
 
             self.garden.stop()
 
     def run(self):
-        gprint("starting receiver...")
+        gprint(" START receiver thread")
 
         self.receiver = self.Receiver(self.garden, self.server_port)
 
         self.receiver.init_connection()
         self.receiver.receive_packages()
         self.receiver.stop_connection()
+
+        gprint(" STOP receiver thread")

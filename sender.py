@@ -25,18 +25,20 @@ class SenderThread(threading.Thread):
                 self.sock.close()
                 self.sock = None
 
+                gprint(" sender connection closed")
+
         def init_connection(self):
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.client_ip, int(self.client_port)))
 
-            gprint("sender connection created...")
+            gprint(" sender connection created")
 
         def send_package(self, package):
             self.sock.send(package.encode("utf8"))
-            gprint("package sent: %s" % package)
+            gprint("  >>> %s:%s %s" % (self.client_ip, self.client_port, package))
 
     def run(self):
-        gprint("starting sender...")
+        gprint(" START sender thread")
 
         self.sender = self.Sender(self.client_ip, self.client_port)
 
@@ -44,12 +46,14 @@ class SenderThread(threading.Thread):
             try:
                 self.sender.init_connection()
             except:
-                gprint("Can't init connection with server, retry in 1 sec")
+                gprint(" ERROR: Can't init connection with server, retry in 1 sec")
                 self.sender.stop_connection()
                 time.sleep(1)
 
         self.generate_packages()
         self.sender.stop_connection()
+
+        gprint(" STOP sender thread")
 
     def generate_packages(self):
         times = constants.NUMBER_OF_PACKAGES
@@ -61,7 +65,7 @@ class SenderThread(threading.Thread):
                 if times:
                     time.sleep(random.randint(1, constants.MAX_NEW_PACKAGE_WAIT_TIME_SEC))
             except:
-                gprint("Can't send data to server")
+                gprint(" ERROR: Can't send data to server")
                 time.sleep(1)
 
             times -= 1

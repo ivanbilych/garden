@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import socket
 
 import garden
 import mgprint
@@ -32,7 +33,9 @@ def parse_command_line_arguments():
 def main():
     parse_command_line_arguments()
 
-    gprint("Starting...\nServer port %d, client %s:%d" % (server_port, client_ip, client_port))
+    gprint("START")
+    gprint("server: %s:%d" % (socket.gethostbyname(socket.gethostname()), server_port))
+    gprint("client: %s:%d" % (client_ip, client_port))
 
     my_garden = garden.Garden()
     sender_thread = sender.SenderThread(client_ip, client_port)
@@ -45,6 +48,8 @@ def main():
 
     sender_thread.join()
     receiver_thread.join()
+
+    gprint("STOP")
 
 if __name__ == "__main__":
     main()

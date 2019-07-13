@@ -44,17 +44,16 @@ class Garden():
             for place in self.grow_places:
                 if place.plant.is_alive:
                     water = place.gave_water(place.plant.REQUIRED_WATER)
-                    gprint("place provides %d water to %s" % (water, place.plant.NAME))
+                    gprint(" we have %d water for %s" % (water, place.plant.NAME))
                     place.plant.drink_water(water)
 
         def run(self):
             while not self.stop_nature:
-                gprint("nature check plants...")
                 self.drink_water()
                 time.sleep(1)
                 self.check_plants()
 
-            gprint("no more plants to grow, exiting")
+            gprint(" no more plants to grow")
 
         def stop(self):
             self.no_more_plants = True
@@ -68,6 +67,7 @@ class Garden():
         self.nature_thread.join()
 
     def stop(self):
+        gprint(" no more packages expected")
         self.nature_thread.stop()
 
     def plant(self, plant):

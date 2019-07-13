@@ -18,20 +18,20 @@ class Plant():
         self.plant_time = datetime.datetime.today()
 
     def drink_water(self, water):
-        gprint("plant %s drinks %d of water (required %d)" % (self.NAME, water, self.REQUIRED_WATER))
+        gprint("  [%10s] drinks %d of water (required %d)" % (self.NAME, water, self.REQUIRED_WATER))
         if water < self.REQUIRED_WATER:
-            gprint("plant %s DIES" % self.NAME)
+            gprint("  [%s] DIES" % self.NAME)
             self.is_alive = False
 
     def update_status(self):
-        gprint("plant %s: ALIVE - %s, GROW UP - %s" % (self.NAME, self.is_alive, self.grow_up))
+        gprint("  [%10s] ALIVE: %s, GROW UP: %s" % (self.NAME, self.is_alive, self.grow_up))
         if self.grow_up or not self.is_alive:
             return
 
         timedelta = datetime.datetime.today() - self.plant_time
 
         if timedelta.seconds > self.GROW_TIME:
-            gprint("plant %s GROW UP" % self.NAME)
+            gprint("  [%10s] GROW UP" % self.NAME)
             self.grow_up = True
 
 def json_to_plant(json_pkg):
