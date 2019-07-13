@@ -66,6 +66,8 @@ class Garden():
         self.nature_thread.start()
         self.nature_thread.join()
 
+        self.summary()
+
     def stop(self):
         gprint(" no more packages expected")
         self.nature_thread.stop()
@@ -75,3 +77,18 @@ class Garden():
         place.add_water(plant.WATER)
 
         self.grow_places.append(place)
+
+    def summary(self):
+        number = 1
+        total_value = 0
+
+        print("SUMMARY")
+
+        for place in self.grow_places:
+            print("[%3d] %s = %d" % (number, place.plant.NAME, place.plant.VALUE))
+
+            if place.plant.is_alive:
+                total_value += place.plant.VALUE
+            number += 1
+
+        print("Total value: %s" % total_value)
