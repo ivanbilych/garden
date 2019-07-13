@@ -5,7 +5,7 @@ from mgprint import gprint
 import plant
 
 class Garden():
-    grow_places = {}
+    grow_places = []
 
     class GrowPlace():
         def __init__(self, plant):
@@ -28,28 +28,36 @@ class Garden():
         def __init__(self, grow_places):
             threading.Thread.__init__(self)
             self.stop_nature = False
+            self.no_more_plants = False
             self.grow_places = grow_places
 
         def check_plants(self):
-            self.stop_nature = True
+            if self.no_more_plants:
+                self.stop_nature = True
 
             for place in self.grow_places:
-                if place.plant.grow_up == False:
+                if not place.plant.grow_up and place.plant.is_alive:
                     self.stop_nature = False
-                    place.plant.update_status()
+                place.plant.update_status()
 
         def drink_water(self):
             for place in self.grow_places:
                 if place.plant.is_alive:
-                    water = place.gave_water(place.plant.WATER/place.plant.FREQUENCY)
-                    place.plant.add_water(water)
+                    water = place.gave_water(place.plant.REQUIRED_WATER)
+                    gprint("place provides %d water to %s" % (water, place.plant.NAME))
+                    place.plant.drink_water(water)
 
         def run(self):
             while not self.stop_nature:
-                gprint("nature checks plants...")
+                gprint("nature check plants...")
                 self.drink_water()
                 time.sleep(1)
                 self.check_plants()
+
+            gprint("no more plants to grow, exiting")
+
+        def stop(self):
+            self.no_more_plants = True
 
     def __init__(self):
         self.water_tank = 150
@@ -59,5 +67,11 @@ class Garden():
         self.nature_thread.start()
         self.nature_thread.join()
 
+    def stop(self):
+        self.nature_thread.stop()
+
     def plant(self, plant):
-        self.grow_places.append(GrowPlace(plant))
+        place = self.GrowPlace(plant)
+        place.add_water(plant.WATER)
+
+        self.grow_places.append(place)
