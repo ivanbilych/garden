@@ -44,9 +44,11 @@ class ReceiverThread(threading.Thread):
                 if data:
                     gprint("package received: %s" % data.decode("utf8"))
 
-                    self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
-
-                    times -= 1
+                    try:
+                        self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
+                        times -= 1
+                    except:
+                        gprint("Wrong data received")
 
             connection.close()
             gprint("client disconnected: %s" % str(client_address[0]))
