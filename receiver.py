@@ -39,11 +39,14 @@ class ReceiverThread(threading.Thread):
             gprint("client connected: %s" % str(client_address[0]))
 
             while times:
-                times -= 1
-
                 data = connection.recv(constants.MAX_PACKAGE_BUFFER_SIZE)
 
-                self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
+                if data:
+                    gprint("package received: %s" % data.decode("utf8"))
+
+                    self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
+
+                    times -= 1
 
             connection.close()
             gprint("client disconnected: %s" % str(client_address[0]))
