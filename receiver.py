@@ -49,7 +49,10 @@ class ReceiverThread(threading.Thread):
                     gprint("  <<< %s" % data.decode("utf8"))
 
                     try:
-                        self.garden.plant(json_to_plant(json.loads(data.decode("utf8"))))
+                        data_json = json.loads(data.decode("utf8"))
+
+                        for item in range(int(data_json["amount"])):
+                            self.garden.plant(json_to_plant(data_json))
                         times -= 1
                     except:
                         gprint("  ERROR: Wrong data received")
