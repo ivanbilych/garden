@@ -45,7 +45,7 @@ class Garden():
             for place in self.grow_places:
                 if place.plant.is_alive:
                     water = place.gave_water(place.plant.REQUIRED_WATER)
-                    gprint(" we have %.2f water for %s" % (water, place.plant.NAME))
+                    gprint(" we have %.2f water for %s (%.2f left)" % (water, place.plant.NAME, place.water))
                     place.plant.drink_water(water)
 
         def run(self):
