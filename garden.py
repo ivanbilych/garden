@@ -1,29 +1,12 @@
 import time
 import threading
 
+import growplace
 from mgprint import gprint
 import plant
 
 class Garden():
     grow_places = []
-
-    class GrowPlace():
-        def __init__(self, plant):
-            self.plant = plant
-            self.water = 0.0
-
-        def add_water(self, water_in):
-            gprint(" add %.2f water to %s" % (water_in, self.plant.NAME))
-            self.water += water_in
-
-        def gave_water(self, water_out):
-            if self.water < water_out:
-                water_taken = self.water
-                self.water = 0.0
-                return water_taken
-            else:
-                self.water -= water_out
-                return water_out
 
     class Nature(threading.Thread):
         def __init__(self, grow_places):
@@ -87,7 +70,7 @@ class Garden():
         water = self.get_water(plant.WATER)
 
         if water:
-            place = self.GrowPlace(plant)
+            place = growplace.GrowPlace(plant)
             place.add_water(water)
 
             self.grow_places.append(place)
