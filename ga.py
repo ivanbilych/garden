@@ -3,6 +3,7 @@
 import argparse
 import socket
 
+import constants
 import garden
 import mgprint
 from mgprint import gprint
@@ -37,7 +38,7 @@ def main():
     gprint("server: %s:%d" % (socket.gethostbyname(socket.gethostname()), server_port))
     gprint("client: %s:%d" % (client_ip, client_port))
 
-    my_garden = garden.Garden()
+    my_garden = garden.Garden(constants.INITIAL_TANK_WATER)
     sender_thread = sender.SenderThread(client_ip, client_port)
     receiver_thread = receiver.ReceiverThread(my_garden, server_port)
 

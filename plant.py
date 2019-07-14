@@ -7,10 +7,10 @@ class Plant():
     def __init__(self, name, value, water, frequency, grow_time):
         self.NAME = name
         self.VALUE = value
-        self.WATER = water
+        self.WATER = float(water)
         self.FREQUENCY = frequency
         self.GROW_TIME = grow_time
-        self.REQUIRED_WATER = water/frequency
+        self.REQUIRED_WATER = float(water/frequency)
 
         self.is_alive = True
         self.grow_up = False
@@ -18,7 +18,7 @@ class Plant():
         self.plant_time = datetime.datetime.today()
 
     def drink_water(self, water):
-        gprint("  [%10s] drinks %d of water (required %d)" % (self.NAME, water, self.REQUIRED_WATER))
+        gprint("  [%10s] drinks %.2f of water (required %.2f)" % (self.NAME, water, self.REQUIRED_WATER))
         if water < self.REQUIRED_WATER:
             gprint("  [%s] DIES" % self.NAME)
             self.is_alive = False

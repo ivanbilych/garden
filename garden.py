@@ -10,15 +10,16 @@ class Garden():
     class GrowPlace():
         def __init__(self, plant):
             self.plant = plant
-            self.water = 0
+            self.water = 0.0
 
         def add_water(self, water_in):
+            gprint(" add %.2f water to %s" % (water_in, self.plant.NAME))
             self.water += water_in
 
         def gave_water(self, water_out):
             if self.water < water_out:
                 water_taken = self.water
-                self.water = 0
+                self.water = 0.0
                 return water_taken
             else:
                 self.water -= water_out
@@ -44,7 +45,7 @@ class Garden():
             for place in self.grow_places:
                 if place.plant.is_alive:
                     water = place.gave_water(place.plant.REQUIRED_WATER)
-                    gprint(" we have %d water for %s" % (water, place.plant.NAME))
+                    gprint(" we have %.2f water for %s" % (water, place.plant.NAME))
                     place.plant.drink_water(water)
 
         def run(self):
@@ -58,9 +59,10 @@ class Garden():
         def stop(self):
             self.no_more_plants = True
 
-    def __init__(self):
-        self.water_tank = 150
+    def __init__(self, water):
+        self.water_tank = float(water)
         self.nature_thread = self.Nature(self.grow_places)
+        gprint(" garden tank have %.2f of water" % water)
 
     def start(self):
         self.nature_thread.start()
@@ -72,11 +74,25 @@ class Garden():
         gprint(" no more packages expected")
         self.nature_thread.stop()
 
-    def plant(self, plant):
-        place = self.GrowPlace(plant)
-        place.add_water(plant.WATER)
+    def get_water(self, water):
+        if self.water_tank < water:
+            water_taken = self.water_tank
+            self.water_tank = 0.0
+            return water_taken
+        else:
+            self.water_tank -= water
+            return water
 
-        self.grow_places.append(place)
+    def plant(self, plant):
+        water = self.get_water(plant.WATER)
+
+        if water:
+            place = self.GrowPlace(plant)
+            place.add_water(water)
+
+            self.grow_places.append(place)
+        else:
+            gprint(" ERROR: no more water in tank, can't plant")
 
     def summary(self):
         number = 1
