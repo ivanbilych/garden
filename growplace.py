@@ -6,8 +6,8 @@ class GrowPlace():
         self.water = 0.0
 
     def add_water(self, water_in):
-        gprint(" add %.2f water to %s" % (water_in, self.plant.NAME))
         self.water += water_in
+        gprint(" PLACE: add %.2f water to %s (%.2f total)" % (water_in, self.plant.NAME, self.water))
 
     def gave_water(self, water_out):
         if self.water < water_out:

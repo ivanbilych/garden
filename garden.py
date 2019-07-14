@@ -10,7 +10,7 @@ class Garden():
         self.water_tank = float(water)
         self.nature_thread = nature.Nature(self.grow_places)
         self.worker_thread = worker.Worker(self)
-        gprint(" garden tank have %.2f of water" % water)
+        gprint(" GARDEN: tank have %.2f of water" % water)
 
     def start(self):
         self.nature_thread.start()
@@ -24,7 +24,7 @@ class Garden():
         self.worker_thread.join()
 
     def stop(self):
-        gprint(" no more packages expected")
+        gprint(" GARDEN: no more packages expected")
         self.nature_thread.stop()
 
     def get_water(self, water):
@@ -45,7 +45,7 @@ class Garden():
 
             self.grow_places.append(place)
         else:
-            gprint(" ERROR: no more water in tank, can't plant")
+            gprint(" GARDEN: ERROR: no more water in tank, can't plant")
 
     def summary(self):
         number = 1

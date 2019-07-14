@@ -23,7 +23,7 @@ class Nature(threading.Thread):
         for place in self.grow_places:
             if place.plant.is_alive:
                 water = place.gave_water(place.plant.REQUIRED_WATER)
-                gprint(" we have %.2f water for %s (%.2f left)" % (water, place.plant.NAME, place.water))
+                gprint(" GARDEN: we have %.2f water for %s (%.2f left)" % (water, place.plant.NAME, place.water))
                 place.plant.drink_water(water)
 
     def run(self):
@@ -32,7 +32,7 @@ class Nature(threading.Thread):
             time.sleep(1)
             self.check_plants()
 
-        gprint(" no more plants to grow")
+        gprint(" GARDEN: no more plants to grow")
 
     def stop(self):
         self.no_more_plants = True
