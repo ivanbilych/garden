@@ -74,10 +74,10 @@ class SenderThread(threading.Thread):
         package = json.loads(constants.PACKAGE_TEMPLATE_JSON)
 
         package["name"] = random.choice(constants.PACKAGE_NAME_VARIANTS)
-        package["amount"] = random.randint(1, 30)
-        package["value"] = random.randint(1, 50)
-        package["water"] = random.randint(1, 10)
-        package["frequency"] = random.randint(1, 10)
-        package["grow_time"] = random.randint(10, 30)
+        package["amount"] = random.randint(constants.PACKAGE_MIN_AMOUNT, constants.PACKAGE_MAX_AMOUNT)
+        package["value"] = random.randint(constants.PACKAGE_MIN_VALUE, constants.PACKAGE_MAX_VALUE)
+        package["water"] = random.randint(constants.PACKAGE_MIN_WATER, constants.PACKAGE_MAX_WATER)
+        package["frequency"] = random.randint(constants.PACKAGE_MIN_FREQUENCY, constants.PACKAGE_MAX_FREQUENCY)
+        package["grow_time"] = random.randint(constants.PACKAGE_MIN_GROW_TIME, constants.PACKAGE_MAX_GROW_TIME)
 
         return json.dumps(package)
