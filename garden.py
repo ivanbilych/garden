@@ -101,10 +101,17 @@ class Garden():
         print("SUMMARY")
 
         for place in self.grow_places:
-            print("[%3d] %s = %d" % (number, place.plant.NAME, place.plant.VALUE))
+            plant = place.plant
+            status = "dead"
 
-            if place.plant.is_alive:
-                total_value += place.plant.VALUE
+            if plant.is_alive:
+                status = "alive"
+
+            print("[%3d] %s = %d (%s)" % (number, plant.NAME, plant.VALUE, status))
+
+            if plant.is_alive:
+                total_value += plant.VALUE
+
             number += 1
 
         print("Total value: %s" % total_value)
