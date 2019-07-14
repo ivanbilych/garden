@@ -1,6 +1,7 @@
 import growplace
 from mgprint import gprint
 import nature
+import worker
 
 class Garden():
     grow_places = []
@@ -8,13 +9,19 @@ class Garden():
     def __init__(self, water):
         self.water_tank = float(water)
         self.nature_thread = nature.Nature(self.grow_places)
+        self.worker_thread = worker.Worker(self)
         gprint(" garden tank have %.2f of water" % water)
 
     def start(self):
         self.nature_thread.start()
+        self.worker_thread.start()
+
         self.nature_thread.join()
 
+        self.worker_thread.stop()
         self.summary()
+
+        self.worker_thread.join()
 
     def stop(self):
         gprint(" no more packages expected")
