@@ -4,7 +4,6 @@ import threading
 
 import constants
 import garden
-import plant
 from plant import json_to_plant
 from mgprint import gprint
 

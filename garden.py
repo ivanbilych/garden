@@ -1,7 +1,6 @@
 import growplace
 from mgprint import gprint
 import nature
-import plant
 
 class Garden():
     grow_places = []
